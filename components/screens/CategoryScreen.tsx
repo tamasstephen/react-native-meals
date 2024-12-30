@@ -11,6 +11,7 @@ import { CATEGORIES } from "@/data/dummy-data";
 import Category from "@/models/category";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Title from "../Title";
+import { Href, router } from "expo-router";
 
 const CategoryItem = ({ item }: { item: Category }) => {
   return (
@@ -23,6 +24,7 @@ const CategoryItem = ({ item }: { item: Category }) => {
         styles.cardStyle,
         pressed && styles.buttonPressed,
       ]}
+      onPress={() => router.push(`/meals?categoryId=${item.id}` as Href)}
     >
       <View style={styles.cardInner}>
         <Text style={styles.cardTitle}>{item.title}</Text>
@@ -57,7 +59,7 @@ export default function CategoryScreen() {
 
 const styles = StyleSheet.create({
   wrapper: {
-    marginVertical: 48,
+    marginVertical: 12,
     justifyContent: "center",
     alignItems: "center",
     width: "100%",

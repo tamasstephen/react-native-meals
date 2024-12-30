@@ -35,11 +35,16 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack screenOptions={{ contentStyle: { backgroundColor: "#24180f" } }}>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="index" options={{ title: "Meals Categories" }} />
+        <Stack.Screen
+          name="meals/index"
+          options={{ title: "Meals Overview" }}
+        />
+        <Stack.Screen name="meals/[meal]" options={{ title: "Meal" }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
     </ThemeProvider>
   );
 }
