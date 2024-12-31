@@ -11,6 +11,8 @@ export default function Layout() {
           },
           headerTintColor: "white",
           headerTitleStyle: { fontWeight: "bold" },
+          drawerActiveBackgroundColor: "#e4b45c",
+          drawerActiveTintColor: "white",
         }}
       >
         <Drawer.Screen name="index" options={{ title: "Meals" }} />

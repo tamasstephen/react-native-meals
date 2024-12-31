@@ -19,7 +19,7 @@ const MealItem = ({ meal }: { meal: Meal }) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
-        <Button title="Back" onPress={() => router.dismissTo("/")} />
+        <Button title="Back" onPress={() => router.dismissTo("../")} />
       ),
     });
   }, [navigation]);
