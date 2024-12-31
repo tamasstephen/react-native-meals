@@ -1,38 +1,84 @@
 import { ScrollView, View, Text, StyleSheet, Image } from "react-native";
 import { MEALS } from "@/data/dummy-data";
 import Meal from "@/models/meal";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { Href, router, useLocalSearchParams, useNavigation } from "expo-router";
 import Title from "@/components/Title";
-import React, { useLayoutEffect, useState } from "react";
+import React, { useCallback, useLayoutEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import IconButton from "@/components/ui/IconButton";
+import { useFavourites } from "@/store/favourites";
+
+const ToggleFavourite = ({
+  isFavourite,
+  onPress,
+}: {
+  isFavourite: boolean;
+  onPress: () => void;
+}) => {
+  return (
+    <IconButton onClick={onPress}>
+      <Ionicons
+        color={isFavourite ? "yellow" : "white"}
+        name="star"
+        size={24}
+      />
+    </IconButton>
+  );
+};
+
+const MoveBack = () => {
+  return (
+    <IconButton onClick={() => router.push("/(home)" as Href)}>
+      <Ionicons color="white" name="arrow-back" size={24} />
+    </IconButton>
+  );
+};
 
 export default function MealDetails() {
   const { meal: id } = useLocalSearchParams();
-  const [isFavorite, setIsFavorite] = useState(false);
   const navigation = useNavigation();
   const meal: Meal | undefined = MEALS.find((meal) => meal.id === id);
+  const { favourites, addFavourite, removeFavourite } = useFavourites();
+  const isFavourite = favourites.includes(meal?.id || "");
 
-  const toggleFavorite = () => {
-    setIsFavorite((prev) => !prev);
+  const toggleFavourite = useCallback(() => {
+    if (isFavourite && meal?.id) {
+      removeFavourite(meal?.id);
+    } else if (meal?.id) {
+      addFavourite(meal?.id);
+    }
+  }, [favourites]);
+
+  const isAfterCategory = () => {
+    const routes = navigation.getState()?.routes;
+    if (!routes || routes.length < 2) return false;
+
+    const previousRoute = routes[routes.length - 2];
+    if (!previousRoute || !previousRoute.params) return false;
+
+    return "categoryId" in previousRoute.params;
   };
 
   useLayoutEffect(() => {
+    const payload: {
+      headerRight: () => JSX.Element;
+      headerLeft?: () => JSX.Element;
+    } = {
+      headerRight: () => (
+        <ToggleFavourite isFavourite={isFavourite} onPress={toggleFavourite} />
+      ),
+    };
+    if (!isAfterCategory()) {
+      const headerLeft = () => {
+        return <MoveBack />;
+      };
+      payload.headerLeft = headerLeft;
+    }
     navigation.setOptions({
       title: meal?.title,
-      headerRight: () => {
-        return (
-          <IconButton onClick={toggleFavorite}>
-            <Ionicons
-              color={isFavorite ? "yellow" : "white"}
-              name="star"
-              size={24}
-            />
-          </IconButton>
-        );
-      },
+      ...payload,
     });
-  }, [meal, toggleFavorite]);
+  }, [meal, favourites]);
 
   if (!meal) {
     return (

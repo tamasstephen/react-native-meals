@@ -13,17 +13,7 @@ import { Href, router, useLocalSearchParams, useNavigation } from "expo-router";
 import Meal from "@/models/meal";
 import { useLayoutEffect } from "react";
 
-const MealItem = ({ meal }: { meal: Meal }) => {
-  const navigation = useNavigation();
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => (
-        <Button title="Back" onPress={() => router.dismissTo("../")} />
-      ),
-    });
-  }, [navigation]);
-
+export const MealItem = ({ meal }: { meal: Meal }) => {
   return (
     <Pressable
       android_ripple={{ color: "#ccc" + 0.5 }}
@@ -55,6 +45,14 @@ export default function Overview() {
   const availableMeals = categoryId
     ? MEALS.filter((meal) => meal.categoryIds.includes(categoryId.toString()))
     : [];
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <Button title="Back" onPress={() => router.dismissTo("../")} />
+      ),
+    });
+  }, [navigation]);
 
   useLayoutEffect(() => {
     navigation.setOptions({

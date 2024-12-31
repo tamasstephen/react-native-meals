@@ -1,9 +1,22 @@
-import { View, Text } from "react-native";
+import AppView from "@/components/AppView";
+import { MEALS } from "@/data/dummy-data";
+import { useFavourites } from "@/store/favourites";
+import { View } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
+import { MealItem } from "../meals";
 
 export default function Favourites() {
+  const { favourites } = useFavourites();
+  const favouriteMeals = MEALS.filter((meal) => favourites.includes(meal.id));
   return (
-    <View>
-      <Text>Favourites</Text>
-    </View>
+    <AppView>
+      <View>
+        <FlatList
+          data={favouriteMeals}
+          renderItem={({ item }) => <MealItem meal={item} />}
+          keyExtractor={(item) => item.id}
+        />
+      </View>
+    </AppView>
   );
 }
