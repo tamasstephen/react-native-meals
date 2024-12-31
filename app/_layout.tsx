@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { Slot } from "expo-router";
+import { Stack } from "expo-router";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -34,7 +34,20 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Slot />
+      <Stack
+        screenOptions={{
+          contentStyle: { backgroundColor: "#24180f" },
+          headerStyle: {
+            backgroundColor: "#351401",
+          },
+          headerTintColor: "white",
+          headerTitleStyle: { fontWeight: "bold" },
+        }}
+      >
+        <Stack.Screen name="(home)" options={{ headerShown: false }} />
+        <Stack.Screen name="meals/index" />
+        <Stack.Screen name="meals/[meal]/" />
+      </Stack>
       <StatusBar style="light" />
     </ThemeProvider>
   );

@@ -1,7 +1,7 @@
 import { ScrollView, View, Text, StyleSheet, Image } from "react-native";
 import { MEALS } from "@/data/dummy-data";
 import Meal from "@/models/meal";
-import { Href, router, useLocalSearchParams, useNavigation } from "expo-router";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 import Title from "@/components/Title";
 import React, { useCallback, useLayoutEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -26,14 +26,6 @@ const ToggleFavourite = ({
   );
 };
 
-const MoveBack = () => {
-  return (
-    <IconButton onClick={() => router.push("/(home)" as Href)}>
-      <Ionicons color="white" name="arrow-back" size={24} />
-    </IconButton>
-  );
-};
-
 export default function MealDetails() {
   const { meal: id } = useLocalSearchParams();
   const navigation = useNavigation();
@@ -49,16 +41,6 @@ export default function MealDetails() {
     }
   }, [favourites]);
 
-  const isAfterCategory = () => {
-    const routes = navigation.getState()?.routes;
-    if (!routes || routes.length < 2) return false;
-
-    const previousRoute = routes[routes.length - 2];
-    if (!previousRoute || !previousRoute.params) return false;
-
-    return "categoryId" in previousRoute.params;
-  };
-
   useLayoutEffect(() => {
     const payload: {
       headerRight: () => JSX.Element;
@@ -68,12 +50,6 @@ export default function MealDetails() {
         <ToggleFavourite isFavourite={isFavourite} onPress={toggleFavourite} />
       ),
     };
-    if (!isAfterCategory()) {
-      const headerLeft = () => {
-        return <MoveBack />;
-      };
-      payload.headerLeft = headerLeft;
-    }
     navigation.setOptions({
       title: meal?.title,
       ...payload,
