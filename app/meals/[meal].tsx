@@ -1,13 +1,39 @@
 import { ScrollView, View, Text, StyleSheet, Image } from "react-native";
 import { MEALS } from "@/data/dummy-data";
 import Meal from "@/models/meal";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 import Title from "@/components/Title";
-import React from "react";
+import React, { useLayoutEffect, useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import IconButton from "@/components/ui/IconButton";
 
 export default function MealDetails() {
   const { meal: id } = useLocalSearchParams();
+  const [isFavorite, setIsFavorite] = useState(false);
+  const navigation = useNavigation();
   const meal: Meal | undefined = MEALS.find((meal) => meal.id === id);
+
+  const toggleFavorite = () => {
+    setIsFavorite((prev) => !prev);
+  };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: meal?.title,
+      headerRight: () => {
+        return (
+          <IconButton onClick={toggleFavorite}>
+            <Ionicons
+              color={isFavorite ? "yellow" : "white"}
+              name="star"
+              size={24}
+            />
+          </IconButton>
+        );
+      },
+    });
+  }, [meal, toggleFavorite]);
+
   if (!meal) {
     return (
       <View style={styles.wrapper}>

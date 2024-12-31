@@ -1,4 +1,4 @@
-import { MEALS } from "@/data/dummy-data";
+import { CATEGORIES, MEALS } from "@/data/dummy-data";
 import {
   Image,
   Pressable,
@@ -6,12 +6,24 @@ import {
   View,
   StyleSheet,
   Text,
+  Button,
 } from "react-native";
 import Title from "@/components/Title";
-import { Href, router, useLocalSearchParams } from "expo-router";
+import { Href, router, useLocalSearchParams, useNavigation } from "expo-router";
 import Meal from "@/models/meal";
+import { useLayoutEffect } from "react";
 
 const MealItem = ({ meal }: { meal: Meal }) => {
+  const navigation = useNavigation();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <Button title="Back" onPress={() => router.dismissTo("/")} />
+      ),
+    });
+  }, [navigation]);
+
   return (
     <Pressable
       android_ripple={{ color: "#ccc" + 0.5 }}
@@ -38,10 +50,19 @@ const MealItem = ({ meal }: { meal: Meal }) => {
 };
 
 export default function Overview() {
-  const { categoryId } = useLocalSearchParams();
+  const { categoryId } = useLocalSearchParams<{ categoryId: string }>();
+  const navigation = useNavigation();
   const availableMeals = categoryId
     ? MEALS.filter((meal) => meal.categoryIds.includes(categoryId.toString()))
     : [];
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: categoryId
+        ? CATEGORIES.find((c) => c.id === categoryId)?.title
+        : "All",
+    });
+  }, [categoryId]);
 
   return (
     <View style={styles.container}>

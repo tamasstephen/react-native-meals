@@ -9,6 +9,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    marginHorizontal: 16,
+    paddingHorizontal: 16,
+    backgroundColor: "#24180f",
   },
 });
